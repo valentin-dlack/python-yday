@@ -5,6 +5,7 @@
     - [Classe `Card` :](#classe-card-)
     - [Classe `Cards` :](#classe-cards-)
   - [Code du jeu en lui même :](#code-du-jeu-en-lui-même-)
+    - [Les Fonction (hors moteur du jeu) :](#les-fonction-hors-moteur-du-jeu-)
 
 ## Ce que j'ai ajouté aux classes :
 
@@ -76,4 +77,38 @@ Cette méthode permet de génerer un paquet de carte, dans l'ordre. Le résultat
 ---
 
 ## Code du jeu en lui même :
+
+### Les Fonction (hors moteur du jeu) :
+
+**`isWin(liste de carte)`**
+
+```py
+def isWin(cardList): 
+    res = 0
+    for i in range(len(cardList)):
+        res += int(cardList[i].getValue())
+    if res == 21:
+        return 1 ##win
+    elif (res < 21):
+        return 0 ##continue
+    else:
+        return 2 ##lose
+```
+
+On check si le resultat de l'addition de toutes les cartes est supérieur ou égal à 21, si c'est égal à 21, alors le jeu est gagné, si c'est en dessous, on continue. Sinon c'est perdu !  
+
+**`stopCroupier(liste de carte)`**
+
+```py 
+def stopCroupier(cardList): 
+    res = 0
+    for i in range(len(cardList)):
+        res += int(cardList[i].getValue())
+    if res <= 16:
+        return False
+    else:
+        return True
+```
+
+Cette méthode est la même que pour le win mais avec le croupier, il pioche tant que la somme reste en dessous de 16
 
