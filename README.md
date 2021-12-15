@@ -6,6 +6,11 @@
     - [Classe `Cards` :](#classe-cards-)
   - [Code du jeu en lui même :](#code-du-jeu-en-lui-même-)
     - [Les Fonction (hors moteur du jeu) :](#les-fonction-hors-moteur-du-jeu-)
+    - [Moteur de jeu :](#moteur-de-jeu-)
+    - [Boucle while principale :](#boucle-while-principale-)
+    - [Si le jeu est gagné](#si-le-jeu-est-gagné)
+    - [Si le jeu est perdu](#si-le-jeu-est-perdu)
+    - [Si le joueur passe -> croupier](#si-le-joueur-passe---croupier)
 
 ## Ce que j'ai ajouté aux classes :
 
@@ -112,3 +117,12 @@ def stopCroupier(cardList):
 
 Cette méthode est la même que pour le win mais avec le croupier, il pioche tant que la somme reste en dessous de 16
 
+### Moteur de jeu :
+
+### Boucle while principale :
+
+### Si le jeu est gagné
+
+### Si le jeu est perdu
+
+### Si le joueur passe -> croupier
