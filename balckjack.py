@@ -162,8 +162,8 @@ def game_engine():
                 resCroup += int(croupierMain[i].getValue())
                 
         if (resMain > resCroup):
-            print("vous avez gagné")
+            print("Vous avez gagné")
         else:
-            print("croupier a gagné")
+            print("Le croupier a gagné")
         
 game_engine()
