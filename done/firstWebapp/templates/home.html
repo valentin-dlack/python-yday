@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+
+<body>
+    <h1>Bienvenu chez vous !</h1>
+    <a href="./login"><button type="button" name="disconnect" {% if session['user'] %} disabled {% endif %}>Se Connecter</button></a><a href="./register"><button type="button" name="disconnect" {% if session['user'] %} disabled {% endif %}>S'enregistrer</button></a>
+    <br> {% if session['user'] %}
+    <p> Bonjour {{ session['user'] }}. comment tu vas ?</p>
+    <form method="POST" name="pokemon">
+        <a href="./logout"><button type="button" name="disconnect">Se Déconnecter</button></a> {% for row in data %}
+        <hr>
+        <img src="{{ row[3]}}" />
+        <h3>{{ row[1] }} -- {{ row[2] }}</h3>
+        <button type="submit" value="{{ row[0] }}" name="addPokemon">Ajouter</button> {% endfor %}
+
+        <h2>Votre Pokédex : ({{ session['user'] }})</h2>
+        {% for row in data2 %}
+        <hr>
+        <img src="{{ row[3]}}" />
+        <h3>{{ row[1] }} -- {{ row[2] }}</h3>
+        <button type="submit" value="{{ row[0] }}" name="delPokemon">Supprimer</button> {% endfor %} {% endif %}
+    </form>
+</body>
+
+</html>
