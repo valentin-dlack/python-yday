@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+
+<body>
+    <h1>Welcome to the Dashboard {{user.name}}</h1>
+    <p>Your ID is : {{user.id}}</p>
+    <br>
+    <p>Le bot est dans {{gc}} serveurs.</p>
+    <p><b>Serveurs en commun :</b></p>
+    <ul>
+        {% for guild in guilds %}
+            {% if guild.class_color == "green" %}
+                <a href="./dashboard/{{guild.id}}"><li style="color: green">{{ guild.name }} -- <i>Joined</i></li></a>
+            {%else%}
+                <a href="https://discord.com/oauth2/authorize?client_id=940948417545375784&scope=bot&permissions=27648860222"><li style="color: red">{{ guild.name }} -- <i>Not Joined</i></li></a>
+            {% endif %}
+        {%endfor%}
+    </ul>
+</body>
+
+</html>
