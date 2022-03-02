@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 import os 
-from quart import Quart, render_template, redirect, url_for
+from quart import Quart, render_template, redirect, url_for, request, make_response
 from quart_discord import DiscordOAuth2Session, requires_authorization, Unauthorized
 import nextcord
 from nextcord.ext import ipc
@@ -35,22 +35,29 @@ async def callback():
 async def index():
     return await render_template("index.html")
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['GET', 'POST'])
 async def dashboard():
-    user = await discord.fetch_user()
-    guildCount = await ipcClient.request("get_guild_count")
-    guildIds = await ipcClient.request("get_guild_ids")
-    try:
-        userGuilds = await discord.fetch_guilds()
-    except:
-      return await redirect(url_for('login'))
-    guilds = []
-    for guild in userGuilds:
-        if guild.permissions.administrator:
-            guild.class_color = "green" if guild.id in guildIds else "red"
-            guilds.append(guild)
-        
-    guilds.sort(key=lambda guild: guild.class_color == "red")
+    if not await discord.authorized:
+        return redirect(url_for('login'))
+    
+    if request.method == 'GET':
+        user = await discord.fetch_user()
+        guildCount = await ipcClient.request("get_guild_count")
+        guildIds = await ipcClient.request("get_guild_ids")
+        try:
+            userGuilds = await discord.fetch_guilds()
+        except:
+            return await redirect(url_for('login'))
+        guilds = []
+        for guild in userGuilds:
+            if guild.permissions.administrator:
+                guild.class_color = "green" if guild.id in guildIds else "red"
+                guilds.append(guild)
+            
+        guilds.sort(key=lambda guild: guild.class_color == "red")
+    elif request.method == 'POST':
+        discord.revoke()
+        return redirect(url_for("index"))
     
     return await render_template("dashboard.html", user=user, gc=guildCount, guilds=guilds)
 

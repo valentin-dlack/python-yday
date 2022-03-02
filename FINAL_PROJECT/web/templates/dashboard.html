@@ -5,24 +5,44 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/main.css">
     <title>Dashboard</title>
 </head>
 
 <body>
     <h1>Welcome to the Dashboard {{user.name}}</h1>
+    <form method="post" name="delog">
+        <button type="submit" class="btn btn-blue"> Déconnexion </button>
+    </form>
     <p>Your ID is : {{user.id}}</p>
     <br>
     <p>Le bot est dans {{gc}} serveurs.</p>
     <p><b>Serveurs en commun :</b></p>
-    <ul>
+    <div class="flex flex-wrap mb-4 text-center">
         {% for guild in guilds %}
-            {% if guild.class_color == "green" %}
-                <a href="./dashboard/{{guild.id}}"><li style="color: green">{{ guild.name }} -- <i>Joined</i></li></a>
-            {%else%}
-                <a href="https://discord.com/oauth2/authorize?client_id=940948417545375784&scope=bot&permissions=27648860222"><li style="color: red">{{ guild.name }} -- <i>Not Joined</i></li></a>
-            {% endif %}
+        {% if guild.class_color == "green" %}
+        <div class="w-1/6 px-3 py-3">
+            <a href="./dashboard/{{guild.id}}">
+                <img class="px-auto rounded-full border-4 border-green-700 hover:brightness-50 transition duration-500 ease-out"
+                    src="{{guild.icon_url}}" alt="outttt" />
+            </a>
+        </div>
+        {%else%}
+        <div class="w-1/6 px-3">
+            <a
+                href="https://discord.com/oauth2/authorize?client_id=940948417545375784&scope=bot&permissions=27648860222">
+                {% if guild.icon_url == None %}
+                <img class="px-auto rounded-full border-4 border-red-700 hover:brightness-50 transition duration-500 ease-out"
+                    src="../static/img/default.png" width="128px" height="128px" alt="outttt" />
+                {% else %}
+                <img class="px-auto rounded-full border-4 border-red-700 hover:brightness-50 transition duration-500 ease-out"
+                    src="{{guild.icon_url}}" alt="outttt" />
+                {%endif%}
+            </a>
+        </div>
+        {% endif %}
         {%endfor%}
-    </ul>
+    </div>
 </body>
 
 </html>
