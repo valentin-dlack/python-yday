@@ -2,14 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-.btn {
+.btn-transparent {
     @apply bg-transparent font-semibold py-2 px-4 border rounded;
 }
 
-.btn-blue {
+.btn-blue-transparent {
     @apply text-blue-700 border-blue-500;
 }
 
-.btn-blue:hover {
+.btn-blue-transparent:hover {
     @apply bg-blue-500 text-white border-transparent
+}
+
+.btn-blue {
+    @apply text-white border-blue-500
+}
+
+.btn-blue:hover {
+    @apply bg-blue-300
+}
+
+.btn-primary {
+    @apply bg-blue-500 font-semibold py-2 px-4 border rounded;
 }

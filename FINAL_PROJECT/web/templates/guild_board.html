@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Guild dashboard</title>
+</head>
+
+<body class="bg-gray-800">
+    <div class="relative top-0 left-0">
+        {% if guild.banner_url == None %}
+        <img class="relative top-0 left-0 max-h-40 w-screen object-cover border-b-2 border-blue-500"
+            src="../static/img/default_banner.jpg" alt="banner of {{guild.name}}" />
+        {% else %}
+        <img class="relative top-0 left-0 max-h-40 w-screen object-cover border-b-2 border-blue-500"
+            src="{{guild.banner_url}}" alt="banner of {{guild.name}}" />
+        {% endif %}
+        <button class="btn-primary btn-blue absolute top-1 left-5" onclick="document.location='../dashboard'"><i
+                class="fa-solid fa-arrow-left mr-2"></i>Retour</button>
+        {% if guild.icon_url == None %}
+        <img class="absolute top-20 left-5 px-auto rounded-full border-4 border-green-400"
+            src="../static/img/default.png" width="128px" height="128px" alt="image of {{guild.name}}" />
+        {% else %}
+        <img class="absolute top-20 left-5 px-auto rounded-full border-4 border-green-400" src="{{guild.icon_url}}"
+            width="128px" height="128px" alt="image of {{guild.name}}" />
+        {%endif%}
+    </div>
+    <div class="flex mb-4">
+        <div class="w-1/6"></div>
+        <div class="w-4/6">
+            <div
+                class="max-w-none sm:mt-5 mt-14 mb-5 px-4 py-4 shadow-md border bg-slate-300 border-gray-400 rounded-md">
+                <p class="text-center text-2xl font-bold">{{guild.name}} <i
+                        class="fa-solid fa-grip-lines-vertical pl-5 pr-5"></i> {{guild.member_count}} membres</p>
+                <form name="options" action="" method="post">
+                    <p class="font-sans">Préfix du bot :</p>
+                    <input type="text" name="setPrefix" id="prefix"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-sm p-2.5"
+                        placeholder="{{guild.prefix}}" value="{{guild.prefix}}" pattern="\b{0,5}\b" required>
+                    <button type="submit" class="btn-primary btn-blue mt-5 w-full">Save changes</button>
+                </form>
+            </div>
+        </div>
+        <div class="w-1/6"></div>
+    </div>
+</body>
+
+</html>

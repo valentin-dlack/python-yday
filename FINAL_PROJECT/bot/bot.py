@@ -45,14 +45,16 @@ async def get_guild_ids(data):
 
 @my_bot.ipc.route()
 async def get_guild(data):
-    guild = my_bot.get_guild(
-        data.guild_id
-    )
+    guild = my_bot.get_guild(data.guild_id)
     if guild is None: return None
     guild_data = {
 		"name": guild.name,
 		"id": guild.id,
-		"prefix" : "?"
+		"prefix" : "?",
+        "member_count": guild.member_count,
+        "owner": guild.owner.name,
+        "icon_url": guild.icon.url,
+        "banner_url": guild.banner.url if guild.banner else None
 	}
     return guild_data
 
