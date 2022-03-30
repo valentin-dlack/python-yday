@@ -37,7 +37,6 @@ async def callback():
         await discord.callback()
     except:
       return redirect(url_for('/login'))
-  
     return redirect(url_for('dashboard'))
 
 @app.route("/")
@@ -76,14 +75,40 @@ async def dashboard_server(guild_id):
         return redirect(url_for('login'))
     guild = await ipcClient.request("get_guild", guild_id = guild_id)
     if guild is None:
-        return redirect(url_for('https://discord.com/oauth2/authorize?client_id=940948417545375784&scope=bot&permissions=27648860222'))
+        return redirect('https://discord.com/oauth2/authorize?client_id=940948417545375784&scope=bot&permissions=27648860222')
         
     if request.method == "POST":
         newPrefix = (await request.form)["setPrefix"]
-        #newPrefix = newPrefix["setPrefix"]
-        print(newPrefix)
+        cursor.execute(f"SELECT prefix FROM guilds WHERE guild_id = {guild_id}")
+        result = cursor.fetchone()
+        if result:
+            cursor.execute("UPDATE guilds SET prefix = ? WHERE guild_id = ?", (newPrefix, guild_id))
+        else:
+            cursor.execute("INSERT INTO guilds (prefix, guild_id) VALUES (?,?)", (newPrefix, guild_id))
+        conn.commit()
+        pref = result
+        return redirect(url_for(f"dashboard_server", guild_id=guild_id))
+    elif request.method == "GET":
+        cursor.execute(f'SELECT prefix FROM guilds WHERE guild_id = {guild_id}')
+    res = cursor.fetchone()
+    if res:
+        pref = res[0]
+    else:
+        try:
+            cursor.execute(f"SELECT prefix FROM guilds WHERE guild_id = {guild_id}")
+            result = cursor.fetchone()
+            if result:
+                cursor.execute("UPDATE guilds SET prefix = ? WHERE guild_id = ?", ("!", str(guild_id)))
+            else:
+                cursor.execute("INSERT INTO guilds (prefix, guild_id) VALUES (?,?)", ("!", str(guild_id)))
+            conn.commit()
+            cursor.execute(f"SELECT prefix FROM guilds WHERE guild_id = {guild_id}")
+            result = cursor.fetchone()
+            pref = result[0]
+        except Exception:
+            pref = "!"
     
-    return await render_template("guild_board.html", guild=guild)
+    return await render_template("guild_board.html", guild=guild, pref=pref)
 
 @app.errorhandler(404)
 async def page_not_found(e):
