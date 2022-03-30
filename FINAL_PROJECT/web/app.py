@@ -1,6 +1,7 @@
 from crypt import methods
 from dotenv import load_dotenv
 import os 
+import json
 import sqlite3
 from quart import Quart, render_template, redirect, url_for, request, make_response
 from quart_discord import DiscordOAuth2Session, requires_authorization, Unauthorized
@@ -78,21 +79,33 @@ async def dashboard_server(guild_id):
         return redirect('https://discord.com/oauth2/authorize?client_id=940948417545375784&scope=bot&permissions=27648860222')
         
     if request.method == "POST":
+        print(await request.form)
         newPrefix = (await request.form)["setPrefix"]
-        cursor.execute(f"SELECT prefix FROM guilds WHERE guild_id = {guild_id}")
+        newWelChan = (await request.form)["setWelcomeChannel"]
+        newLogChan = (await request.form)["setLogsChannel"]
+        newNick = (await request.form)["setNick"]
+        newWarnLimit = (await request.form)["setWarnLimit"]
+        newBanwords = (await request.form)["setBanwords"]
+        cursor.execute(f"SELECT prefix, welcome_chan, log_chan, name, banword, warn_before_ban FROM guilds WHERE guild_id = {guild_id}")
         result = cursor.fetchone()
         if result:
-            cursor.execute("UPDATE guilds SET prefix = ? WHERE guild_id = ?", (newPrefix, guild_id))
+            cursor.execute("""UPDATE guilds SET prefix = ?, welcome_chan = ?, log_chan = ?, name = ?, banword = ?, warn_before_ban = ? 
+                           WHERE guild_id = ?""", (newPrefix, newWelChan, newLogChan, newNick, newBanwords, newWarnLimit, guild_id))
         else:
-            cursor.execute("INSERT INTO guilds (prefix, guild_id) VALUES (?,?)", (newPrefix, guild_id))
+            cursor.execute("""INSERT INTO guilds (prefix, welcome_chan, log_chan, name, banword, warn_before_ban, guild_id) 
+                           VALUES (?,?,?,?,?,?,?)""", (newPrefix, newWelChan, newLogChan, newNick, newBanwords, newWarnLimit, guild.id))
         conn.commit()
         pref = result
         return redirect(url_for(f"dashboard_server", guild_id=guild_id))
+    
     elif request.method == "GET":
-        cursor.execute(f'SELECT prefix FROM guilds WHERE guild_id = {guild_id}')
+        cursor.execute(f'SELECT prefix, welcome_chan, log_chan, name, adm_roles, banword, warn_before_ban FROM guilds WHERE guild_id = {guild_id}')
     res = cursor.fetchone()
     if res:
-        pref = res[0]
+        pref = res
+        serial_roles = json.loads(pref[4])
+        getChan_1 = str(pref[1])
+        getChan_2 = str(pref[2])
     else:
         try:
             cursor.execute(f"SELECT prefix FROM guilds WHERE guild_id = {guild_id}")
@@ -108,7 +121,7 @@ async def dashboard_server(guild_id):
         except Exception:
             pref = "!"
     
-    return await render_template("guild_board.html", guild=guild, pref=pref)
+    return await render_template("guild_board.html", guild=guild, pref=pref, roles=serial_roles, chan_1=getChan_1, chan_2=getChan_2)
 
 @app.errorhandler(404)
 async def page_not_found(e):
