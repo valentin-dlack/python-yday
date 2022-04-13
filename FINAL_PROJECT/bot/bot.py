@@ -1,3 +1,4 @@
+import time
 import nextcord
 import os
 import sqlite3
@@ -80,11 +81,39 @@ async def on_message(message):
         if message.content.lower().find(banword["value"].lower()) != -1:
             await message.delete()
             await message.channel.send(f"{message.author.mention} Dis pas ça !! :(")
-            return
+        else:
+            await my_bot.process_commands(message)
+        
+@my_bot.event
+async def on_message_delete(message):
+    if message.author.bot:
+        return
+    log_channel = message.guild.get_channel(int(cursor.execute(f'SELECT log_chan FROM guilds WHERE guild_id = {message.guild.id}').fetchone()[0]))
+    del_embed = nextcord.Embed(title="Message supprimé", description=f"{message.author.mention} a supprimé le message : {message.content}", color=0xFF0000)
+    await log_channel.send(embed=del_embed)
+    return
+
+@my_bot.event
+async def on_member_join(member):
+    welcome_channel = member.guild.get_channel(int(cursor.execute(f'SELECT welcome_chan FROM guilds WHERE guild_id = {member.guild.id}').fetchone()[0]))
+    welcome_embed = nextcord.Embed(title="Bienvenue", description=f"{member.mention} a rejoint le serveur ! Amuse toi bien :)", color=0x00FF00)
+    await welcome_channel.send(embed=welcome_embed)
+    return
 
 @my_bot.command()
 async def ping(ctx):
     await ctx.reply('Pong!')
+    
+@my_bot.command()
+async def kick(ctx, member: nextcord.Member, *, reason="Aucune raison donnée"):
+    log_channel = ctx.guild.get_channel(int(cursor.execute(f'SELECT log_chan FROM guilds WHERE guild_id = {ctx.guild.id}').fetchone()[0]))
+    if member.guild_permissions.kick_members:
+        await ctx.reply(f"{member.mention} ne peut pas être kick")
+    else:
+        await member.kick(reason=reason)
+        await ctx.reply(f"{member.mention} a été kick")
+        kick_embed = nextcord.Embed(title="Kick", description=f"{member.mention} a été kick par {ctx.author.mention} pour {reason} à <t:{int(time.time())}:f>", color=0xFF0000)
+        await log_channel.send(embed=kick_embed)
 
 @my_bot.ipc.route()
 async def get_member_count(data):
