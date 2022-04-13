@@ -60,15 +60,15 @@ async def dashboard():
         guilds = []
         for guild in userGuilds:
             if guild.permissions.administrator:
-                guild.class_color = "green" if guild.id in guildIds else "red"
+                guild.class_color = "Joined" if guild.id in guildIds else "Not Joined"
                 guilds.append(guild)
             
-        guilds.sort(key=lambda guild: guild.class_color == "red")
+        guilds.sort(key=lambda guild: guild.class_color == "Not Joined")
     elif request.method == 'POST':
         discord.revoke()
         return redirect(url_for("index"))
     
-    return await render_template("dashboard.html", user=user, gc=guildCount, guilds=guilds)
+    return await render_template("dashboard.html", user=user, gc=guildCount, guilds=guilds, gsc=len(guilds))
 
 @app.route("/dashboard/<int:guild_id>", methods=['GET', 'POST'])
 async def dashboard_server(guild_id):
