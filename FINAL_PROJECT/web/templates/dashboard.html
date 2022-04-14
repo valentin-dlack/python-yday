@@ -17,13 +17,16 @@
         <h1 class="text-xl">Welcome to your Dashboard {{user.name}}</h1>
     </div>
     <div>
-        <h1 class="text-2xl text-black font-semibold text-center my-5">Le bot est présent dans {{gc}} serveurs {{gsc}}
+        <form method="post" name="delog">
+            <button type="submit" class="btn-blue btn-primary float-left ml-4"> <i class="fa-solid fa-right-from-bracket"></i> </button>
+        </form>
+        <h1 class="text-2xl text-black font-semibold text-center my-5 float-none">Le bot est présent dans {{gc}} serveurs sur {{gsc}}
         </h1>
         <div class="flex flex-wrap mb-4 mt-6 text-center justify-center">
             {% for guild in guilds %}
             {% if guild.class_color == "Joined" %}
             <div class="w-full md:w-1/3 lg:w-1/6 px-3 py-3">
-                <div class="bg-white shadow-xl rounded-lg py-3">
+                <div class="bg-white shadow-lg hover:shadow-xl border hover:border-gray-400 rounded-lg py-3">
                     <div class="photo-wrapper p-2">
                         {% if guild.icon_url == None %}
                         <img class="w-32 h-32 rounded-full mx-auto" src="../static/img/default.png"
@@ -45,19 +48,10 @@
 
                     </div>
                 </div>
-                <!-- <a href="./dashboard/{{guild.id}}">
-                    {% if guild.icon_url == None %}
-                    <img class="px-auto rounded-full border-4 border-green-700 hover:brightness-50 transition duration-500 ease-out"
-                        src="../static/img/default.png" alt="image of {{guild.name}}" />
-                    {% else %}
-                    <img class="px-auto rounded-full border-4 border-green-700 hover:brightness-50 transition duration-500 ease-out"
-                        src="{{guild.icon_url}}" alt="image of {{guild.name}}" />
-                    {%endif%}
-                </a> -->
             </div>
             {%else%}
             <div class="w-full md:w-1/3 lg:w-1/6 px-3 py-3">
-                <div class="bg-white shadow-xl rounded-lg py-3">
+                <div class="bg-white shadow-lg hover:shadow-xl border hover:border-gray-400 rounded-lg py-3">
                     <div class="photo-wrapper p-2">
                         {% if guild.icon_url == None %}
                         <img class="w-32 h-32 rounded-full mx-auto" src="../static/img/default.png"
@@ -80,23 +74,10 @@
 
                     </div>
                 </div>
-                <!-- <a
-                    href="https://discord.com/oauth2/authorize?client_id=940948417545375784&scope=bot&permissions=27648860222">
-                    {% if guild.icon_url == None %}
-                    <img class="px-auto rounded-full border-4 border-red-700 hover:brightness-50 transition duration-500 ease-out"
-                        src="../static/img/default.png" width="128px" height="128px" alt="image of {{guild.name}}" />
-                    {% else %}
-                    <img class="px-auto rounded-full border-4 border-red-700 hover:brightness-50 transition duration-500 ease-out"
-                        src="{{guild.icon_url}}" alt="image of {{guild.name}}" />
-                    {%endif%}
-                </a>-->
             </div>
             {% endif %}
             {%endfor%}
         </div>
-        <form method="post" name="delog">
-            <button type="submit" class="btn-blue btn-primary float-left"> Déconnexion </button>
-        </form>
     </div>
 </body>
 

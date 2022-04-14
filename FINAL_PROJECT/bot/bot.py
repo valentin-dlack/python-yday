@@ -134,6 +134,14 @@ async def get_guild_ids(data):
     return res
 
 @my_bot.ipc.route()
+async def leave_guild(data):
+    guild = my_bot.get_guild(
+        data.guild_id
+    )
+    await guild.leave()
+    return
+
+@my_bot.ipc.route()
 async def set_prefix(prefix, g_id):
     cursor.execute('SELECT')
 
@@ -150,7 +158,7 @@ async def get_guild(data):
 		"id": guild.id,
         "member_count": guild.member_count,
         "owner": guild.owner.name,
-        "icon_url": guild.icon.url,
+        "icon_url": guild.icon.url if guild.icon else None,
         "banner_url": guild.banner.url if guild.banner else None,
         "channels": text_channel_list,
         "nickname": my_bot.user.name,

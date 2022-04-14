@@ -80,6 +80,10 @@ async def dashboard_server(guild_id):
         
     if request.method == "POST":
         print(await request.form)
+        if (await request.form)["leave_btn"] == "Leave":
+            await ipcClient.request("leave_guild", guild_id = guild_id)
+            return redirect(url_for('dashboard'))
+        
         newPrefix = (await request.form)["setPrefix"]
         newWelChan = (await request.form)["setWelcomeChannel"]
         newLogChan = (await request.form)["setLogsChannel"]
