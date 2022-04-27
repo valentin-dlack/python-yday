@@ -44,6 +44,11 @@ async def callback():
 async def index():
     return await render_template("index.html")
 
+@app.route("/leave/<int:guild_id>")
+async def leave(guild_id):
+    await ipcClient.request("leave_guild", guild_id = guild_id)
+    return redirect(url_for('dashboard'));
+
 @app.route('/dashboard', methods=['GET', 'POST'])
 async def dashboard():
     if not await discord.authorized:
@@ -79,11 +84,6 @@ async def dashboard_server(guild_id):
         return redirect('https://discord.com/oauth2/authorize?client_id=940948417545375784&scope=bot&permissions=27648860222')
         
     if request.method == "POST":
-        print(await request.form)
-        if (await request.form)["leave_btn"] == "Leave":
-            await ipcClient.request("leave_guild", guild_id = guild_id)
-            return redirect(url_for('dashboard'))
-        
         newPrefix = (await request.form)["setPrefix"]
         newWelChan = (await request.form)["setWelcomeChannel"]
         newLogChan = (await request.form)["setLogsChannel"]
@@ -94,12 +94,13 @@ async def dashboard_server(guild_id):
         result = cursor.fetchone()
         if result:
             cursor.execute("""UPDATE guilds SET prefix = ?, welcome_chan = ?, log_chan = ?, name = ?, banword = ?, warn_before_ban = ? 
-                           WHERE guild_id = ?""", (newPrefix, newWelChan, newLogChan, newNick, newBanwords, newWarnLimit, guild_id))
+                        WHERE guild_id = ?""", (newPrefix, newWelChan, newLogChan, newNick, newBanwords, newWarnLimit, guild_id))
         else:
             cursor.execute("""INSERT INTO guilds (prefix, welcome_chan, log_chan, name, banword, warn_before_ban, guild_id) 
-                           VALUES (?,?,?,?,?,?,?)""", (newPrefix, newWelChan, newLogChan, newNick, newBanwords, newWarnLimit, guild.id))
+                        VALUES (?,?,?,?,?,?,?)""", (newPrefix, newWelChan, newLogChan, newNick, newBanwords, newWarnLimit, guild.id))
         conn.commit()
         pref = result
+        await ipcClient.request("set_nickname", guild_id = guild_id, nickname = newNick)
         return redirect(url_for(f"dashboard_server", guild_id=guild_id))
     
     elif request.method == "GET":

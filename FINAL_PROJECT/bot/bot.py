@@ -76,6 +76,8 @@ async def on_message(message):
         return
     cursor.execute(f'SELECT banword FROM guilds WHERE guild_id = {message.guild.id}')
     res = cursor.fetchone()
+    if res[0] == '':
+        return
     banlist = json.loads(res[0])
     for banword in banlist:
         if message.content.lower().find(banword["value"].lower()) != -1:
@@ -83,6 +85,7 @@ async def on_message(message):
             await message.channel.send(f"{message.author.mention} Dis pas ça !! :(")
         else:
             await my_bot.process_commands(message)
+            return
         
 @my_bot.event
 async def on_message_delete(message):
@@ -103,6 +106,7 @@ async def on_member_join(member):
 @my_bot.command()
 async def ping(ctx):
     await ctx.reply('Pong!')
+    return
     
 @my_bot.command()
 async def kick(ctx, member: nextcord.Member, *, reason="Aucune raison donnée"):
@@ -142,8 +146,12 @@ async def leave_guild(data):
     return
 
 @my_bot.ipc.route()
-async def set_prefix(prefix, g_id):
-    cursor.execute('SELECT')
+async def set_nickname(data):
+    guild = my_bot.get_guild(
+        data.guild_id
+    )
+    await guild.me.edit(nick=data.nickname)
+    return
 
 @my_bot.ipc.route()
 async def get_guild(data):
